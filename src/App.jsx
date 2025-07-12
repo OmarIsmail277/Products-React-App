@@ -5,11 +5,12 @@ import Cart from "./Components/Cart";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import { AuthProvider } from "./contexts/AuthProvider";
+import { HashRouter } from "react-router-dom";
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="cart" element={<Cart />} />
@@ -17,7 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }

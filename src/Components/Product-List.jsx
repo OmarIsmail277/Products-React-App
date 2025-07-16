@@ -3,8 +3,9 @@
 import ProductCard from "./Product-Card";
 import { useEffect, useState } from "react";
 import { axiosInterceptor } from "../Network/Interceptor";
-import { useCart } from "../contexts/useCart";
 import SearchBar from "./SearchBar";
+import { useCart } from "../contexts/useCart";
+import { AddToCart } from "../store/cartSlice";
 
 function ProductList() {
   const [products, setProducts] = useState([]);

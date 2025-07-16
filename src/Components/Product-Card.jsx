@@ -2,10 +2,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as solidStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as regularStar } from "@fortawesome/free-regular-svg-icons";
 import { useCart } from "../contexts/useCart";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AddToCart } from "../store/cartSlice";
 
 function ProductCard({ product }) {
   const { addToCart, getItemQuantity, updateQuantity } = useCart();
+  const navigate = useNavigate();
   const cartQuantity = getItemQuantity(product.id);
+  const disptach = useDispatch();
 
   const getStars = () => {
     const rating = product.rating || 0;
@@ -18,7 +23,8 @@ function ProductCard({ product }) {
     return stars;
   };
 
-  const increment = () => {
+  const increment = (e) => {
+    e.stopPropagation(); // Prevent card click
     if (cartQuantity === 0) {
       addToCart(product, 1);
     } else {
@@ -26,58 +32,75 @@ function ProductCard({ product }) {
     }
   };
 
-  const decrement = () => {
+  const decrement = (e) => {
+    e.stopPropagation(); // Prevent card click
     if (cartQuantity > 0) {
       updateQuantity(product.id, cartQuantity - 1);
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevent card click
     addToCart(product, 1);
   };
 
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`, { state: { product } });
+  };
+
   return (
-    <div className="card" style={{ 
-      padding: "16px", 
-      textAlign: "center",
-      display: "flex",
-      flexDirection: "column",
-      height: "100%"
-    }}>
+    <div
+      className="card"
+      style={{
+        padding: "16px",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        cursor: "pointer",
+      }}
+      onClick={handleCardClick}
+    >
       <img
         src={product.thumbnail}
         alt={product.title}
-        style={{ 
-          width: "100%", 
-          height: "180px", 
+        style={{
+          width: "100%",
+          height: "180px",
           objectFit: "cover",
           borderRadius: "6px",
-          marginBottom: "12px"
+          marginBottom: "12px",
         }}
       />
-      <h3 style={{ 
-        fontSize: "16px", 
-        fontWeight: "600", 
-        marginBottom: "8px",
-        color: "var(--dark-gray)"
-      }}>
+      <h3
+        style={{
+          fontSize: "16px",
+          fontWeight: "600",
+          marginBottom: "8px",
+          color: "var(--dark-gray)",
+        }}
+      >
         {product.title}
       </h3>
-      <p style={{ 
-        fontSize: "14px", 
-        color: "var(--gray)", 
-        marginBottom: "12px",
-        lineHeight: "1.4",
-        flex: "1"
-      }}>
+      <p
+        style={{
+          fontSize: "14px",
+          color: "var(--gray)",
+          marginBottom: "12px",
+          lineHeight: "1.4",
+          flex: "1",
+        }}
+      >
         {product.description}
       </p>
-      <p style={{ 
-        fontSize: "18px", 
-        fontWeight: "600", 
-        color: "var(--primary-blue)",
-        marginBottom: "8px"
-      }}>
+      <p
+        style={{
+          fontSize: "18px",
+          fontWeight: "600",
+          color: "var(--primary-blue)",
+          marginBottom: "8px",
+        }}
+      >
         ${product.price}
       </p>
 
@@ -88,23 +111,27 @@ function ProductCard({ product }) {
       </div>
 
       {/* Stock Info */}
-      <div style={{
-        fontSize: "0.875rem",
-        color: product.stock > 10 ? "var(--success)" : "var(--warning)",
-        marginBottom: "12px",
-        fontWeight: "600"
-      }}>
+      <div
+        style={{
+          fontSize: "0.875rem",
+          color: product.stock > 10 ? "var(--success)" : "var(--warning)",
+          marginBottom: "12px",
+          fontWeight: "600",
+        }}
+      >
         {product.stock > 10 ? "In Stock" : `Only ${product.stock} left`}
       </div>
 
       {/* Quantity Controls */}
-      <div style={{ 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center",
-        gap: "8px",
-        marginBottom: "12px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          marginBottom: "12px",
+        }}
+      >
         <button
           onClick={decrement}
           className="btn btn-secondary"
@@ -114,22 +141,24 @@ function ProductCard({ product }) {
             padding: "0",
             borderRadius: "50%",
             fontSize: "1.25rem",
-            opacity: cartQuantity === 0 ? "0.5" : "1"
+            opacity: cartQuantity === 0 ? "0.5" : "1",
           }}
           disabled={cartQuantity === 0}
         >
           -
         </button>
-        
-        <span style={{
-          fontSize: "1.125rem",
-          fontWeight: "600",
-          color: "var(--gray-700)",
-          minWidth: "30px"
-        }}>
+
+        <span
+          style={{
+            fontSize: "1.125rem",
+            fontWeight: "600",
+            color: "var(--gray-700)",
+            minWidth: "30px",
+          }}
+        >
           {cartQuantity}
         </span>
-        
+
         <button
           onClick={increment}
           className="btn btn-secondary"
@@ -138,7 +167,7 @@ function ProductCard({ product }) {
             height: "32px",
             padding: "0",
             borderRadius: "50%",
-            fontSize: "1.25rem"
+            fontSize: "1.25rem",
           }}
         >
           +
@@ -147,16 +176,18 @@ function ProductCard({ product }) {
 
       {/* Add to Cart Button */}
       <button
-        onClick={handleAddToCart}
+        onClick={() => disptach(AddToCart(product))}
         className="btn btn-primary"
         style={{
           width: "100%",
           padding: "var(--space-md)",
           fontSize: "1rem",
-          fontWeight: "700"
+          fontWeight: "700",
         }}
       >
-        {cartQuantity > 0 ? `Add More (${cartQuantity} in cart)` : "🛒 Add to Cart"}
+        {cartQuantity > 0
+          ? `Add More (${cartQuantity} in cart)`
+          : "🛒 Add to Cart"}
       </button>
     </div>
   );

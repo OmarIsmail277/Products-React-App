@@ -8,14 +8,16 @@ export function CartProvider({ children }) {
   function addToCart(item, quantity = 1) {
     setCartItems((prev) => {
       // Check if item already exists in cart
-      const existingItemIndex = prev.findIndex((cartItem) => cartItem.id === item.id);
-      
+      const existingItemIndex = prev.findIndex(
+        (cartItem) => cartItem.id === item.id
+      );
+
       if (existingItemIndex !== -1) {
         // Item exists, update quantity
         const updatedItems = [...prev];
         updatedItems[existingItemIndex] = {
           ...updatedItems[existingItemIndex],
-          quantity: (updatedItems[existingItemIndex].quantity || 1) + quantity
+          quantity: (updatedItems[existingItemIndex].quantity || 1) + quantity,
         };
         return updatedItems;
       } else {
@@ -34,7 +36,7 @@ export function CartProvider({ children }) {
       removeFromCart(id);
       return;
     }
-    
+
     setCartItems((prev) =>
       prev.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
